@@ -11,3 +11,7 @@ T_AMB = 45.0      # Ambient temperature from paper
 BETA = 0.6        # Reduced for more realistic heat transfer
 GAMMA = 0.4       # Adjusted conductance
 THRESH_MIG_GAIN = 0.01  # Increased threshold to prevent unnecessary migrations
+
+THERMAL_CONDUCTANCE_BASE = 0.5
+THERMAL_CONDUCTANCE_DECAY = 2.0
+AMBIENT_CONDUCTANCE = 0.1
