@@ -14,7 +14,8 @@ Through this implementation, we aim to:
 - Implement four distinct migration policies for comparison
 - Demonstrate the superiority of TSPD-based optimization over thermal-balance approaches
 - Offer insights into thermal-aware resource management for modern computing systems
-
+> ![fig.4](1.png)
+> ![fig.4](2.png)
 ## System Model and Configuration
 
 The system configuration in `config.py` establishes a realistic simulation environment based on the paper's specifications:
@@ -82,6 +83,8 @@ The implementation successfully demonstrates that the paper's central hypothesis
 4. **Outperforming Alternatives**: surpassing traditional thermal-balance approaches by more than 2× in performance gain
 
 The results confirm that TSPD-based optimization represents a superior approach for thermal-aware resource management in heterogeneous many-core systems, particularly as processor architectures continue to diversify and thermal constraints become increasingly challenging.
+![](figure4_results.png)
+![](throughput_gain.png)
 
 ## Conclusion
 
