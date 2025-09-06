@@ -6,14 +6,12 @@ from config import NUM_CORES, NUM_ITERATION
 from datetime import datetime
 import time
 
-# Add timestamp to filename to avoid overwriting
 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 OUTPUT_FILE = f"results_policies_{timestamp}.csv"
 
 results_all = []
 start_time = time.time()
 
-# Test ALL scenarios from 2 to 51 active cores
 for n_active in range(2, NUM_CORES):
     progress = (n_active-1) / (NUM_CORES-2) * 100
     elapsed_time = time.time() - start_time
@@ -33,7 +31,6 @@ for n_active in range(2, NUM_CORES):
             for i in active_cores:
                 A0[i] = 1
 
-            # Run all policies and capture their results
             policies = {
                 "Proposed": run_Proposed,
                 "PdOracle": run_PdOracle,
@@ -55,7 +52,6 @@ for n_active in range(2, NUM_CORES):
                         "throughput_gain": data["throughput_gain"]
                     })
                     
-                    # Print progress for this policy
                     print(f"    {policy_name}: {data['throughput_gain']:.4f} gain, {data['migrations']} migs, rho: {data['rho']:.4f}")
                     
                 except Exception as e:
@@ -66,7 +62,6 @@ for n_active in range(2, NUM_CORES):
             print(f"Error running policies for n_active={n_active}, sample_id={sample_id}: {e}")
             continue
 
-# Save results
 save_results_csv(OUTPUT_FILE, results_all)
 
 total_time = time.time() - start_time

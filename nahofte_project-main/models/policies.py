@@ -15,14 +15,10 @@ def run_Proposed(A, max_migs=15):
         actives = [i for i,a in enumerate(A) if a==1]
         idles = [i for i,a in enumerate(A) if a==0]
         
-        # Sort active cores by their TSPD constraint (ascending)
         S = sorted(actives, key=lambda i: R[i])
         
-        # Sort idle cores by their TSPD constraint (descending)
-        # For idle cores, we need to estimate what their TSPD would be if activated
         idle_R_estimates = []
         for d in idles:
-            # Create a temporary allocation where this idle core is activated
             A_temp = A.copy()
             A_temp[d] = 1
             R_temp = getTSPD(A_temp)
@@ -160,7 +156,7 @@ def run_PerfOracle(A, max_migs=15):
     }
 
 # ------------------- HotCold -------------------
-def run_HotCold(A, max_migs=15, temp_eps=0.5):  # Increased temp_eps to allow more migrations
+def run_HotCold(A, max_migs=15, temp_eps=0.5):
     migs = 0
     R = getTSPD(A)
     rho = global_TSPD_budget(R)
@@ -168,7 +164,6 @@ def run_HotCold(A, max_migs=15, temp_eps=0.5):  # Increased temp_eps to allow mo
     T = predict_temps(A, F)
     initial_throughput = throughput(A, F)
     
-    # Track visited states to avoid cycles
     visited = set()
     
     def A_key(A):
@@ -185,7 +180,6 @@ def run_HotCold(A, max_migs=15, temp_eps=0.5):  # Increased temp_eps to allow mo
             if not act or not idle:
                 continue
                 
-            # Find hottest active core and coldest idle core of this type
             s = max(act, key=lambda i: T[i])
             d = min(idle, key=lambda i: T[i])
             

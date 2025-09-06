@@ -1,4 +1,3 @@
-# models/core_info.py
 from data.core_types import CORE_TYPES, CORE_INFO
 from config import NUM_CORES
 

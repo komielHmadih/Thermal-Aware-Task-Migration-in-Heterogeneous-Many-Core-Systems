@@ -5,26 +5,20 @@ import glob
 import os
 
 def create_figure4_visualizations():
-    # Find the most recent results file
     result_files = glob.glob("results_policies8.csv")
     if not result_files:
         print("No results files found. Run main.py first.")
         return
     
-    # Use the most recent file
     results_file = max(result_files, key=os.path.getctime)
     print(f"Using results file: {results_file}")
     
-    # Load the results data
     df = pd.read_csv(results_file)
     
-    # Calculate the percentage of active cores (n_active out of 52 total cores)
     df['percent_active'] = (df['n_active'] / 52) * 100
     
-    # Create bins for every 10% of active cores
     df['active_bin'] = (df['percent_active'] // 10) * 10
     
-    # Group by bin and policy, then calculate averages
     grouped = df.groupby(['active_bin', 'policy']).agg({
         'throughput': 'mean',
         'rho': 'mean',
@@ -32,30 +26,25 @@ def create_figure4_visualizations():
         'throughput_gain': 'mean'
     }).reset_index()
     
-    # Pivot the data for easier plotting
     throughput_pivot = grouped.pivot(index='active_bin', columns='policy', values='throughput')
     rho_pivot = grouped.pivot(index='active_bin', columns='policy', values='rho')
     migrations_pivot = grouped.pivot(index='active_bin', columns='policy', values='migrations')
     throughput_gain_pivot = grouped.pivot(index='active_bin', columns='policy', values='throughput_gain')
     
-    # Calculate normalized gains relative to oracles
-    # For TSPD-Budget Gain: Normalize relative to PdOracle
+
     rho_norm = rho_pivot.copy()
     for policy in ['Proposed', 'PerfOracle', 'HotCold']:
         if policy in rho_pivot.columns and 'PdOracle' in rho_pivot.columns:
             rho_norm[policy] = rho_pivot[policy] / rho_pivot['PdOracle']
     
-    # For Performance Gain: Normalize relative to PerfOracle
     throughput_norm = throughput_pivot.copy()
     for policy in ['Proposed', 'PdOracle', 'HotCold']:
         if policy in throughput_pivot.columns and 'PerfOracle' in throughput_pivot.columns:
             throughput_norm[policy] = throughput_pivot[policy] / throughput_pivot['PerfOracle']
     
-    # Create the plots in the style of Figure 4 - REMOVED ONLY THE PERFORMANCE GAIN SUBPLOT
     plt.style.use('seaborn-v0_8-whitegrid')
     fig, axes = plt.subplots(1, 2, figsize=(12, 6))  # Changed from 3 to 2 subplots
     
-    # Colors for policies
     colors = {
         'Proposed': 'orange',
         'PerfOracle': 'green',
@@ -63,7 +52,6 @@ def create_figure4_visualizations():
         'PdOracle': 'blue'
     }
     
-    # 1. TSPD-Budget Gain (normalized to PdOracle)
     x = rho_norm.index
     width = 2.5
     
@@ -79,7 +67,6 @@ def create_figure4_visualizations():
     axes[0].legend()
     axes[0].grid(True, axis='y')
     
-    # 2. Number of Migrations (now at position 1 instead of 2)
     x_migrations = migrations_pivot.index
     width_migrations = 1.5
     
@@ -103,7 +90,6 @@ def create_figure4_visualizations():
     plt.savefig('figure4_results.png', dpi=300)
     plt.show()
     
-    # KEEP the separate plot for absolute throughput gain
     plt.figure(figsize=(10, 6))
     x = throughput_gain_pivot.index
     
